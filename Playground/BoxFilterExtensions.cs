@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Playground
@@ -12,8 +13,7 @@ namespace Playground
             //bring back boxes according to filtter
             //you can use only one where across boxes parameter
             //try not to use list
-
-            return boxes.Where(boxConfigs.IsInConfigs);
+            return boxes == null ? new List<Box>() : boxes.Where(boxConfigs.IsInConfigs);
         }
 
         private static bool IsInConfigs(this IEnumerable<BoxConfig> configs, Box box)
