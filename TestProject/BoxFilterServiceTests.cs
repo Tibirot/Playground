@@ -13,22 +13,11 @@ namespace TestProject
         private List<Box> boxes;
         private List<Box> emptyBoxes;
         private List<BoxConfig> boxesConfigs;
-        private List<BoxConfig> emptyBoxesConfigs;
-        private IAuthorizationService authService;
-        private readonly BoxFilterService sut;
         private readonly Mock<IBoxFilterService> boxFilterServiceMock = new Mock<IBoxFilterService>();
-        private readonly Mock<IAuthorizationService> authServiceMock = new Mock<IAuthorizationService>();
-        private readonly Mock<IEnumerable<Box>> boxesMock = new Mock<IEnumerable<Box>>();
-
-        public BoxFilterServiceTests()
-        {
-            sut = new BoxFilterService(boxesMock.Object, authServiceMock.Object);    
-        }
 
         [TestInitialize]
         public void Init()
         {
-            authService = new AuthorizationService();
             boxes = new List<Box>
             {
                 new Box {Id = 1, Name = "Test1", Color = "Green", Weight = 1},
@@ -46,7 +35,6 @@ namespace TestProject
             };
 
             emptyBoxes = new List<Box>();
-            emptyBoxesConfigs = new List<BoxConfig>();
         }
 
         [TestMethod]
@@ -73,14 +61,7 @@ namespace TestProject
         {
             // Arrange
             var boxConfig = new BoxConfig();
-            var correctBoxes = new List<Box>
-            {
-                new Box {Id = 1, Name = "Test1", Color = "Green", Weight = 1},
-                new Box {Id = 2, Name = "Test2", Color = "Red", Weight = 23},
-                new Box {Id = 3, Name = "Test3", Color = "Yellow", Weight = 5},
-                new Box {Id = 4, Name = "Test4", Color = "Purple", Weight = 16},
-                new Box {Id = 5, Name = "Test5", Color = "Black", Weight = 51}
-            };
+            var correctBoxes = boxes;
 
             boxFilterServiceMock.Setup(x => x.FilterCustomBoxes(boxConfig)).Returns(correctBoxes);
 
@@ -96,15 +77,14 @@ namespace TestProject
         {
             // Arrange
             var boxConfig = boxesConfigs.First();
-            var correctBoxes = new List<Box>();
 
-            boxFilterServiceMock.Setup(x => x.FilterCustomBoxes(boxConfig)).Returns(correctBoxes);
+            boxFilterServiceMock.Setup(x => x.FilterCustomBoxes(boxConfig)).Returns(emptyBoxes);
 
             // Act
             var filteredBoxes = boxFilterServiceMock.Object.FilterCustomBoxes(boxConfig);
 
             // Assert
-            CollectionAssert.AreEquivalent(filteredBoxes.ToList(), correctBoxes);
+            CollectionAssert.AreEquivalent(filteredBoxes.ToList(), emptyBoxes);
         }
 
     }
